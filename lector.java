@@ -4,6 +4,21 @@ import java.util.ArrayList;
 
 public class lector {
 
+
+    public int rios(String texto){
+        for (int i =0; i<= texto.length(); i++){
+            char[][] matriz = lectorMatrizStrings(texto, i);
+            for (char[] fila : matriz) {
+            System.out.println(new String(fila));
+            
+        }
+        System.out.println(i);
+        }
+        return 0;
+    }
+
+
+
    
     public char[][] lectorMatrizStrings(String texto, int ancho) {
 
@@ -14,12 +29,12 @@ public class lector {
 
     for (String palabra : palabrasTexto) {
 
-        // Si la palabra sola es más larga que el ancho, la recortamos
-        if (palabra.length() > ancho) {
-            palabra = palabra.substring(0, ancho);
+        
+        if (palabra.length() > ancho) { // Devuelvo una matriz con nada para indicar falla
+            char [][] respuestaFallida = new char[0][0];
+            return respuestaFallida;
         }
 
-        // ¿Cabe en la línea actual?
         if (lineaActual.length() == 0) {
             lineaActual.append(palabra);
         } else if (lineaActual.length() + 1 + palabra.length() <= ancho) {
@@ -51,7 +66,7 @@ private char[] convertirLinea(String linea, int ancho) {
         if (i < linea.length()) {
             fila[i] = linea.charAt(i);
         } else {
-            fila[i] = ' ';
+            fila[i] = '*';
         }
     }
 
@@ -70,5 +85,7 @@ private char[] convertirLinea(String linea, int ancho) {
     for (char[] fila : resultado) {
         System.out.println(new String(fila));
     }
+    int x = lector.rios(texto);
+
 }
 }
