@@ -26,6 +26,9 @@ public class lector {
     List<char[]> filas = new ArrayList<>();
 
     StringBuilder lineaActual = new StringBuilder();
+    char[] DP = new char[ancho];
+    
+   
 
     for (String palabra : palabrasTexto) {
 
@@ -35,12 +38,13 @@ public class lector {
             return respuestaFallida;
         }
 
-        if (lineaActual.length() == 0) {
+        if (lineaActual.length() == 0) { // caso de que las palabras quepan en la fila actual
             lineaActual.append(palabra);
         } else if (lineaActual.length() + 1 + palabra.length() <= ancho) {
             lineaActual.append(" ").append(palabra);
+            
         } else {
-            filas.add(convertirLinea(lineaActual.toString(), ancho));
+            filas.add(convertirLinea(lineaActual.toString(), ancho)); // agrgar palabras
             lineaActual = new StringBuilder(palabra);
         }
     }
@@ -50,7 +54,7 @@ public class lector {
         filas.add(convertirLinea(lineaActual.toString(), ancho));
     }
 
-    // Convertir List a char[][]
+    // Convertierto las filas en la matriz
     char[][] matriz = new char[filas.size()][ancho];
     for (int i = 0; i < filas.size(); i++) {
         matriz[i] = filas.get(i);
