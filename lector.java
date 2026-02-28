@@ -1,6 +1,7 @@
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class lector {
 
@@ -27,6 +28,7 @@ public class lector {
 
     StringBuilder lineaActual = new StringBuilder();
     char[] DP = new char[ancho];
+    Arrays.fill(DP, '0');
     
    
 
@@ -36,16 +38,20 @@ public class lector {
         if (palabra.length() > ancho) { // Devuelvo una matriz con nada para indicar falla
             char [][] respuestaFallida = new char[0][0];
             return respuestaFallida;
-        }
+        }else{
 
-        if (lineaActual.length() == 0) { // caso de que las palabras quepan en la fila actual
-            lineaActual.append(palabra);
-        } else if (lineaActual.length() + 1 + palabra.length() <= ancho) {
-            lineaActual.append(" ").append(palabra);
-            
-        } else {
-            filas.add(convertirLinea(lineaActual.toString(), ancho)); // agrgar palabras
-            lineaActual = new StringBuilder(palabra);
+            if (lineaActual.length() == 0) { // caso de que las palabras quepan en la fila actual
+                lineaActual.append(palabra);
+            } else if (lineaActual.length() + 1 + palabra.length() <= ancho) {
+                DP [lineaActual.length()] += 1;
+                lineaActual.append(" ").append(palabra);
+                System.out.println(DP);
+                
+            } else {
+                filas.add(convertirLinea(lineaActual.toString(), ancho)); // agrgar palabras
+                lineaActual = new StringBuilder(palabra);
+
+            }
         }
     }
 
@@ -57,6 +63,7 @@ public class lector {
     // Convertierto las filas en la matriz
     char[][] matriz = new char[filas.size()][ancho];
     for (int i = 0; i < filas.size(); i++) {
+
         matriz[i] = filas.get(i);
     }
 
@@ -89,7 +96,7 @@ private char[] convertirLinea(String linea, int ancho) {
     for (char[] fila : resultado) {
         System.out.println(new String(fila));
     }
-    int x = lector.rios(texto);
+    //int x = lector.rios(texto);
 
 }
 }
