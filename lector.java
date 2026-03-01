@@ -11,23 +11,30 @@
     public class lector {
 
 
-        public int rios(String texto){
-            int maxRios = 0;
-            int anchopPreferido = texto.length();
-            for (int i =0; i<= texto.length(); i++){
-                int lenRio = lectorMatrizStrings(texto, i);
-                if (lenRio > maxRios) {
-                    maxRios = lenRio;
-                    
-                    anchopPreferido = i;
-                    
-                }
-            }
-            System.out.println("Ancho preferido: " + anchopPreferido);
-            System.out.println("Río más largo: " + maxRios);
+        public int rios(String texto) {
 
-            return maxRios;
+    int maxRios = 0;
+    int anchoPreferido = texto.length();
+
+    for (int i = 1; i <= texto.length(); i++) {
+
+        int lenRio = lectorMatrizStrings(texto, i);
+
+        if (lenRio > maxRios) {
+            maxRios = lenRio;
+            anchoPreferido = i;
         }
+        // Si empata, nos quedamos con el más pequeño
+        else if (lenRio == maxRios && i < anchoPreferido) {
+            anchoPreferido = i;
+        }
+    }
+
+    System.out.println("Ancho preferido: " + anchoPreferido);
+    System.out.println("Río más largo: " + maxRios);
+
+    return maxRios;
+}
 
 
 
@@ -56,7 +63,6 @@
                 } else if (lineaActual.length() + 1 + palabra.length() <= ancho) {
                     int posEspacio = lineaActual.length();  // Posición del espacio
                     DPagregar(posEspacio, ancho, sumaRios, indice, DP);
-
                     lineaActual.append(" ").append(palabra);
                     
                     
@@ -64,10 +70,9 @@
                     
                 } else {
                     filas.add(convertirLinea(lineaActual.toString(), ancho)); // agrgar palabras
-                    indice++; // para seguir a l sieugnte linea
+                    indice++; // para seguir a la sieugnte linea
                     lineaActual = new StringBuilder(palabra);
                     
-
                 }
             }
 
@@ -76,23 +81,24 @@
         }
         maxRio = Arrays.stream(DP).max().orElse(0);
         
+        
+        if(ancho>10 && ancho<40){
+        System.out.println("-----");
+        System.out.println("Ancho: " + ancho);
+        System.out.println("Max Río: " + maxRio);
+        System.out.println("-----");
         //System.out.println("-----");
-        //System.out.println("-----");
-        //System.out.println("-----");
-        //for (int i = 0; i < sumaRios.length; i++) {
-        //    for (int j = 0; j < sumaRios[i].length; j++) {
-        //        System.out.print(sumaRios[i][j]);
-        ////    }
-        //    System.out.println();
-        //    
-        //}
+        System.out.println("DP completo:");
+        for (int j = 0; j < DP.length; j++) {
+        System.out.print(DP[j] + " ");
+        }
+        System.out.println();
+    }
         //System.out.println("-----");
         //System.out.println("-----");
         //System.out.println("-----");
 
-        for (int i = 0; i < DP.length; i++) {
-            System.out.print(DP[i]);
-        }
+        
         //System.out.println("-----");
         //System.out.println("Max Río: " + maxRio);   
         //System.out.println("-----");
@@ -129,44 +135,28 @@
 
         return fila;
     }
+public void DPagregar(int pos, int ancho, int[][] sumaRios, int indice, int[] DP) {
 
-    public void DPagregar(int pos, int ancho, int[][] sumaRios, int indice, int[] DP) {
+    int columna = pos;
 
-        // Convertimos pos al índice real de la columna
-        int columna = pos ;//- 1;
+    if (columna < 0 || columna >= ancho) {
+        return;
+    }
 
-        // Validamos límites de columna
-        if (columna < 0 || columna >= ancho) {
-            return;
-        }
-
-        // Caso base: primera fila
-        if (indice == 0) {
-            sumaRios[indice][columna] = 1;
-            DP[columna] = Math.max(DP[columna], 1);
-            return;
-        }
-
-        // Valores de la fila anterior
+    if (indice == 0) {
+        sumaRios[indice][columna] = 1;
+    } else {
         int arriba = sumaRios[indice - 1][columna];
 
-        int arribaIzq = (columna - 1 >= 0)
-                ? sumaRios[indice - 1][columna - 1]
-                : 0;
-
-        int arribaDer = (columna + 1 < ancho)
-                ? sumaRios[indice - 1][columna + 1]
-                : 0;
-
-        // Tu lógica original
-        if (arriba != 0 || arribaIzq != 0 || arribaDer != 0) {
-            int mejor = Math.max(arriba, Math.max(arribaIzq, arribaDer));
-        sumaRios[indice][columna] = (mejor > 0) ? mejor + 1 : 1;
+        if (arriba != 0) {
+            sumaRios[indice][columna] = arriba + 1;
         } else {
             sumaRios[indice][columna] = 1;
         }
-        DP[columna] = Math.max(sumaRios[indice][columna], DP[columna]);
     }
+
+    DP[columna] = Math.max(DP[columna], sumaRios[indice][columna]);
+}
 
         public static void main(String[] args) {
 
