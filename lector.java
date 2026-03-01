@@ -1,3 +1,8 @@
+/*
+Autores:
+Camilo José Ochoa Romero - 202321705
+Lucas Ruiz Yockteng- 202321331
+*/
 
 import java.util.List;
 import java.util.ArrayList;
@@ -7,53 +12,92 @@ public class lector {
 
 
     public int rios(String texto){
+        int maxRios = 0;
+        int anchopPreferido = texto.length();
         for (int i =0; i<= texto.length(); i++){
-            char[][] matriz = lectorMatrizStrings(texto, i);
-            for (char[] fila : matriz) {
-            System.out.println(new String(fila));
-            
+            int lenRio = lectorMatrizStrings(texto, i);
+            if (lenRio > maxRios) {
+                maxRios = lenRio;
+                if(anchopPreferido > i){
+                    anchopPreferido = i;
+                }
+            }
         }
-        System.out.println(i);
-        }
-        return 0;
+        System.out.println("Ancho preferido: " + anchopPreferido);
+        System.out.println("Río más largo: " + maxRios);
+
+        return maxRios;
     }
 
 
 
    
-    public char[][] lectorMatrizStrings(String texto, int ancho) {
+    public int lectorMatrizStrings(String texto, int ancho) {
 
     String[] palabrasTexto = texto.split(" ");
     List<char[]> filas = new ArrayList<>();
 
     StringBuilder lineaActual = new StringBuilder();
-    char[] DP = new char[ancho];
-    Arrays.fill(DP, '0');
-    
-   
-
+    int[] DP = new int[ancho];
+    int[][] sumaRios = new int[palabrasTexto.length][ancho];
+    Arrays.fill(DP, 0);
+    int maxRio = 0;
+    int indice = 0;
     for (String palabra : palabrasTexto) {
 
         
         if (palabra.length() > ancho) { // Devuelvo una matriz con nada para indicar falla
-            char [][] respuestaFallida = new char[0][0];
-            return respuestaFallida;
+            return 0;
         }else{
 
             if (lineaActual.length() == 0) { // caso de que las palabras quepan en la fila actual
                 lineaActual.append(palabra);
+                //indice++;
             } else if (lineaActual.length() + 1 + palabra.length() <= ancho) {
-                DP [lineaActual.length()] += 1;
+                int posEspacio = lineaActual.length();  // Posición del espacio
+                DPagregar(posEspacio, ancho, sumaRios, indice, DP);
+
                 lineaActual.append(" ").append(palabra);
-                System.out.println(DP);
+                
+                
+
                 
             } else {
                 filas.add(convertirLinea(lineaActual.toString(), ancho)); // agrgar palabras
+                indice++; // para seguir a l sieugnte linea
                 lineaActual = new StringBuilder(palabra);
+                
 
             }
         }
+
+
+        
     }
+    maxRio = Arrays.stream(DP).max().orElse(0);
+    
+    //System.out.println("-----");
+    //System.out.println("-----");
+    //System.out.println("-----");
+    //for (int i = 0; i < sumaRios.length; i++) {
+    //    for (int j = 0; j < sumaRios[i].length; j++) {
+    //        System.out.print(sumaRios[i][j]);
+    ////    }
+    //    System.out.println();
+    //    
+    //}
+    //System.out.println("-----");
+    //System.out.println("-----");
+    //System.out.println("-----");
+
+    //for (int i = 0; i < DP.length; i++) {
+    //    System.out.print(DP[i]);
+    //}
+    //System.out.println("-----");
+    //System.out.println("Max Río: " + maxRio);   
+    //System.out.println("-----");
+    //System.out.println("ancho: " + ancho);  
+
 
     // Agregar última línea
     if (lineaActual.length() > 0) {
@@ -67,7 +111,9 @@ public class lector {
         matriz[i] = filas.get(i);
     }
 
-    return matriz;
+
+
+    return maxRio;
 }
 
 private char[] convertirLinea(String linea, int ancho) {
@@ -84,19 +130,49 @@ private char[] convertirLinea(String linea, int ancho) {
     return fila;
 }
 
+public void DPagregar(int pos, int ancho, int[][] sumaRios, int indice, int[] DP) {
+
+    // Convertimos pos al índice real de la columna
+    int columna = pos ;//- 1;
+
+    // Validamos límites de columna
+    if (columna < 0 || columna >= ancho) {
+        return;
+    }
+
+    // Caso base: primera fila
+    if (indice == 0) {
+        sumaRios[indice][columna] = 1;
+        return;
+    }
+
+    // Valores de la fila anterior
+    int arriba = sumaRios[indice - 1][columna];
+
+    int arribaIzq = (columna - 1 >= 0)
+            ? sumaRios[indice - 1][columna - 1]
+            : 0;
+
+    int arribaDer = (columna + 1 < ancho)
+            ? sumaRios[indice - 1][columna + 1]
+            : 0;
+
+    // Tu lógica original
+    if (arriba != 0 || arribaIzq != 0 || arribaDer != 0) {
+        sumaRios[indice][columna] = arriba + arribaIzq + arribaDer + 1;
+    } else {
+        sumaRios[indice][columna] = 1;
+    }
+    DP[columna] = Math.max(sumaRios[indice][columna], DP[columna]);
+}
+
     public static void main(String[] args) {
 
     lector lector = new lector();
 
-    String texto = "El Amazonas es el río más largo de Suramérica y el Magdalena es el más largo que fluye enteramente en Colombia";
-    int ancho = 16 ;
+    String texto = "El Amazonas es el río más largo de Suramérica y el Magdalena es el más largo que fluye enteramente en Colombia Mambrú se fue a la guerra que dolor que dolor que pena Carito me habla en ingles qué bonito se le ve Carito me habla en ingles qué me dice yo no se";
 
-    char[][] resultado = lector.lectorMatrizStrings(texto, ancho);
-
-    for (char[] fila : resultado) {
-        System.out.println(new String(fila));
-    }
-    //int x = lector.rios(texto);
+    int x = lector.rios(texto);
 
 }
 }
