@@ -82,7 +82,7 @@ private char[] convertirLinea(String linea, int ancho) {
     lector lector = new lector();
 
     String texto = "El Amazonas es el río más largo de Suramérica y el Magdalena es el más largo que fluye enteramente en Colombia Mambrú se fue a la guerra que dolor que dolor que pena Carito me habla en ingles qué bonito se le ve Carito me habla en ingles qué me dice yo no se";
-    int ancho = 25 ;
+    int ancho = 16 ;
 
     char[][] resultado = lector.lectorMatrizStrings(texto, ancho);
 
